@@ -33,6 +33,8 @@ class CardSearchController extends Controller
         $img = (string) $img->encode('jpg', 80);
         $card = [];
 
+        return response()->json(['img' => $img]);
+
         if (!empty($img)) {
             $url = "http://localhost:4212/index/searcher";
             $header = [
@@ -59,10 +61,10 @@ class CardSearchController extends Controller
                     $card = (array) $card;
                     $card['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
                 }
-            }       
+            }
         }
 
-        return json_encode($card);
+        return response()->json($card);
     }
 
     /**

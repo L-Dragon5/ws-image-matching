@@ -74,13 +74,6 @@ class PastecIndexController extends Controller
                 curl_close($ch);
 
                 if (!empty($result)) {
-                    DB::table('settings')->updateOrInsert([
-                        'setting_key' => 'indexInsert_lastId'
-                    ], [
-                        'setting_key' => 'indexInsert_lastId',
-                        'value' => $uuid,
-                    ]);
-
                     echo "$uuid complete.<br>";
                 } else {
                     echo "Something went wrong with $uuid";
@@ -93,6 +86,14 @@ class PastecIndexController extends Controller
             $counter++;
             if ($counter >= 50) {
                 $this->saveImageIndex();
+
+                DB::table('settings')->updateOrInsert([
+                    'setting_key' => 'indexInsert_lastId'
+                ], [
+                    'setting_key' => 'indexInsert_lastId',
+                    'value' => $uuid,
+                ]);
+
                 $counter = 0;
             }
         }
