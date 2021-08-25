@@ -70,7 +70,7 @@ class PastecIndexController extends Controller
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $img);
-                $result = json_decode(curl_exec($ch));
+                $result = json_decode(curl_exec($ch), true);
                 curl_close($ch);
 
                 if (!empty($result)) {
@@ -124,7 +124,7 @@ class PastecIndexController extends Controller
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        $result = json_decode(curl_exec($ch));
+        $result = json_decode(curl_exec($ch), true);
         curl_close($ch);
 
         echo "Saved image index.<br>";
