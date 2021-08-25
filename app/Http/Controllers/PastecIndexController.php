@@ -71,17 +71,21 @@ class PastecIndexController extends Controller
                 $result = json_decode(curl_exec($ch));
                 curl_close($ch);
 
-                DB::table('settings')->updateOrInsert([
-                    'setting_key' => 'indexInsert_lastId'
-                ], [
-                    'setting_key' => 'indexInsert_lastId',
-                    'value' => $uuid,
-                ]);
+                if (!empty($result)) {
+                    DB::table('settings')->updateOrInsert([
+                        'setting_key' => 'indexInsert_lastId'
+                    ], [
+                        'setting_key' => 'indexInsert_lastId',
+                        'value' => $uuid,
+                    ]);
 
-                echo "$uuid complete.<br>";
-                echo $result['type'] . '<br><br>';
+                    echo "$uuid complete.<br>";
+                } else {
+                    echo "Something went wrong with $uuid";
+                }
+
                 ob_flush();
-                flush();              
+                flush();            
             }
 
             // Do once for now.
