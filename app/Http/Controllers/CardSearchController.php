@@ -64,7 +64,7 @@ class CardSearchController extends Controller
             }
         }
 
-        return response()->json($card);
+        return json_encode($card);
     }
 
     /**
