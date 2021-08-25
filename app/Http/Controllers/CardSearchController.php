@@ -31,7 +31,7 @@ class CardSearchController extends Controller
             $constraint->upsize();
         });
         $img = (string) $img->encode('jpg', 80);
-        $card = ['error' => 'Card not found'];
+        $card = ['error' => 'Error processing image'];
 
         if (!empty($img)) {
             $url = "http://localhost:4212/index/searcher";
@@ -59,12 +59,16 @@ class CardSearchController extends Controller
                             ->first();
                         $card = (array) $card;
                         $card['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                    } else {
+                        $card['error'] = 'Could not find card associated with image.';
                     }
+                } else {
+                    $card['error'] = 'Failed while processing image.';
                 }
             }
         }
 
-        return json_encode($card);
+        return response()->json($card);
     }
 
     /**
