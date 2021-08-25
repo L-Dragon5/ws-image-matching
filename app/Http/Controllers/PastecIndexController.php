@@ -43,6 +43,8 @@ class PastecIndexController extends Controller
             ->take(PHP_INT_MAX)
             ->get();
 
+        $counter = 0;
+
         if (ob_get_level() == 0) ob_start();
         foreach ($cards as $card) {
             $uuid = $card->id;
@@ -88,8 +90,12 @@ class PastecIndexController extends Controller
                 flush();            
             }
 
-            // Do once for now.
-            return;
+            $counter++;
+            if ($counter >= 20) {
+                $this->saveImageIndex();
+                $counter = 0;
+                return;
+            }
         }
 
         ob_end_flush();
