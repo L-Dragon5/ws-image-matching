@@ -54,7 +54,7 @@ class CardSearchController extends Controller
                     if (!empty($result['image_ids'])) {
                         $id = reset($result['image_ids']);
                         $card = DB::table('cards')
-                            ->select('id', 'card_id')
+                            ->select('card_id', 'jp_name')
                             ->where('id', $id)
                             ->first();
                         $card = (array) $card;
