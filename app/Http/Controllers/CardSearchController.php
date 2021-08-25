@@ -31,7 +31,7 @@ class CardSearchController extends Controller
             $constraint->upsize();
         });
         $img = (string) $img->encode('jpg', 80);
-        $card = [];
+        $card = ['error' => 'Card not found'];
 
         if (!empty($img)) {
             $url = "http://localhost:4212/index/searcher";
@@ -49,15 +49,17 @@ class CardSearchController extends Controller
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
 
-            if ($result['type'] === 'SEARCH_RESULTS') {
-                if (!empty($result['image_ids'])) {
-                    $id = reset($result['image_ids']);
-                    $card = DB::table('cards')
-                        ->select('id', 'card_id')
-                        ->where('id', $id)
-                        ->first();
-                    $card = (array) $card;
-                    $card['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+            if (!empty($result)) {
+                if (isset($result['type']) && $result['type'] === 'SEARCH_RESULTS') {
+                    if (!empty($result['image_ids'])) {
+                        $id = reset($result['image_ids']);
+                        $card = DB::table('cards')
+                            ->select('id', 'card_id')
+                            ->where('id', $id)
+                            ->first();
+                        $card = (array) $card;
+                        $card['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                    }
                 }
             }
         }
