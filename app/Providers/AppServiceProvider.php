@@ -15,6 +15,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        //
+    }
+
+    /**
+     * Boot the authentication services for the application.
+     *
+     * @return void
+     */
+    public function boot()
+    {
         Validator::extend('imageable', function ($attribute, $value, $params, $validator) {
             try {
                 ImageManagerStatic::make($value);

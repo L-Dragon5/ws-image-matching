@@ -33,8 +33,6 @@ class CardSearchController extends Controller
         $img = (string) $img->encode('jpg', 80);
         $card = [];
 
-        return response()->json(['img' => $img]);
-
         if (!empty($img)) {
             $url = "http://localhost:4212/index/searcher";
             $header = [
