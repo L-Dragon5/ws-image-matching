@@ -106,7 +106,7 @@ class PastecIndexController extends Controller
      * 
      * @return void
      */
-    public function saveImageIndex() {
+    private function saveImageIndex() {
         $url = "http://localhost:4212/index/io";
         $header = [
             'Accept: application/json',
@@ -126,13 +126,6 @@ class PastecIndexController extends Controller
         $result = json_decode(curl_exec($ch));
         curl_close($ch);
 
-        if (ob_get_level() == 0) ob_start();
         echo "Saved image index.<br>";
-        echo $result['type'];
-        ob_flush();
-        flush();
-
-        ob_end_flush();
-        return;
     }
 }

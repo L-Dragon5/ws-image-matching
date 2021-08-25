@@ -23,7 +23,6 @@ $router->get('/retrieveYYTPrices', 'DataScraperController@retrieveYYTPrices');
 $router->get('/retrieveCardTranslations', 'DataScraperController@retrieveCardTranslations');
 
 $router->get('/updateImageIndex', 'PastecIndexController@updateImageIndex');
-$router->get('/saveImageIndex', 'PastecIndexController@saveImageIndex');
 
 $router->get('/pingServer', 'CardSearchController@pingServer');
 $router->post('/searchByImage', 'CardSearchController@searchByImage');
