@@ -91,10 +91,9 @@ class PastecIndexController extends Controller
             }
 
             $counter++;
-            if ($counter >= 20) {
+            if ($counter >= 50) {
                 $this->saveImageIndex();
                 $counter = 0;
-                return;
             }
         }
 
