@@ -18,7 +18,7 @@ class CardSearchController extends Controller
         // Validate that image is sent.
         try {
             $this->validate($request, [
-                'image' => 'image|required',
+                'image' => 'imageable|required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return json_encode($e);
