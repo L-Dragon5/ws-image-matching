@@ -115,17 +115,17 @@ class CardSearchController extends Controller
         if (!empty($searchText)) {
             $cards = DB::table('cards')
                 ->select('card_id', 'jp_name', 'yyt_price', 'yyt_last_updated')
-                ->where('card_id', 'like', '%' . $searchText . '%')
+                ->where('card_id', 'LIKE', "%{$searchText}%")
                 ->get();
 
             foreach ($cards as $card) {
                 $imgCardId = str_replace('/', '_', $card->card_id);
 
                 $tmp = (array) $card;
-                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $tmp['card_id'];
                 if ($this->flysystem->has("$imgCardId.png")) {
                     $img = Image::make($this->flysystem->read("$imgCardId.png"));
-                    $img->resize(250, 250, function ($constraint) {
+                    $img->resize(100, 100, function ($constraint) {
                         $constraint->aspectRatio();
                     });
                     $tmp['image'] = (string) $img->encode('data-url');
@@ -172,10 +172,10 @@ class CardSearchController extends Controller
                 $imgCardId = str_replace('/', '_', $card->card_id);
 
                 $tmp = (array) $card;
-                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $tmp['card_id'];
                 if ($this->flysystem->has("$imgCardId.png")) {
                     $img = Image::make($this->flysystem->read("$imgCardId.png"));
-                    $img->resize(250, 250, function ($constraint) {
+                    $img->resize(100, 100, function ($constraint) {
                         $constraint->aspectRatio();
                     });
                     $tmp['image'] = (string) $img->encode('data-url');
