@@ -107,7 +107,7 @@ class PastecIndexController extends Controller
      * 
      * @return void
      */
-    private function saveImageIndex() {
+    public function saveImageIndex() {
         $url = "http://localhost:4212/index/io";
         $header = [
             'Accept: application/json',
