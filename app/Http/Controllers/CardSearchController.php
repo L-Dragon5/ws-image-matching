@@ -21,7 +21,7 @@ class CardSearchController extends Controller
                 'image' => 'imageable|required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return json_encode($e);
+            return response()->json($e);
         }
 
         // Read image, resize, and re-encode as jpg.
@@ -102,9 +102,9 @@ class CardSearchController extends Controller
         curl_close($ch);
 
         if (isset($result['type']) && $result['type'] === 'PONG') {
-            return json_encode(true);
+            return response()->json(true);
         }
 
-        return json_encode(true);
+        return response()->json(true);
     }
 }

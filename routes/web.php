@@ -13,16 +13,18 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->get('/', function () {
+    return 'Hello World!';
 });
 
-$router->get('/retrieveCardList', 'DataScraperController@retrieveCardList');
-$router->get('/retrieveCardData', 'DataScraperController@retrieveCardData');
-$router->get('/retrieveYYTPrices', 'DataScraperController@retrieveYYTPrices');
-$router->get('/retrieveCardTranslations', 'DataScraperController@retrieveCardTranslations');
+$router->group(['middleware' => 'auth.basic'], function () use ($router) {
+    $router->get('/retrieveCardList', 'DataScraperController@retrieveCardList');
+    $router->get('/retrieveCardData', 'DataScraperController@retrieveCardData');
+    $router->get('/retrieveYYTPrices', 'DataScraperController@retrieveYYTPrices');
+    $router->get('/retrieveCardTranslations', 'DataScraperController@retrieveCardTranslations');
 
-$router->get('/updateImageIndex', 'PastecIndexController@updateImageIndex');
+    $router->get('/updateImageIndex', 'PastecIndexController@updateImageIndex');
+});
 
 $router->get('/pingServer', 'CardSearchController@pingServer');
 $router->post('/searchByImage', 'CardSearchController@searchByImage');
