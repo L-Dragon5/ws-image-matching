@@ -29,3 +29,5 @@ $router->group(['middleware' => 'auth.basic'], function () use ($router) {
 
 $router->get('/pingServer', 'CardSearchController@pingServer');
 $router->post('/searchByImage', 'CardSearchController@searchByImage');
+$router->post('/searchByText', 'CardSearchController@searchByText');
+$router->post('/searchByIds', 'CardSearchController@searchByIds');

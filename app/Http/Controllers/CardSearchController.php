@@ -5,9 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
+use GrahamCampbell\Flysystem\FlysystemManager;
 
 class CardSearchController extends Controller
 {
+    /**
+     * Flysystem storage instance.
+     */
+    protected $flysystem;
+
+    /**
+     * Create a new controller instance.
+     * 
+     * @param FlysystemManager  $flysystem
+     * @return void
+     */
+    public function __construct(FlysystemManager $flysystem)
+    {
+        $this->flysystem = $flysystem;
+    }
+
     /**
      * Search card via image and retrieve data.
      * 
@@ -75,6 +92,106 @@ class CardSearchController extends Controller
         }
 
         return response()->json($card);
+    }
+
+    /**
+     * Search cards via text and retrieve data.
+     * 
+     * @param   Request   $request
+     * @return  Response
+     */
+    public function searchByText(Request $request) {
+        try {
+            $this->validate($request, [
+                'search' => 'string|min:3|max:255|required',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e);
+        }
+
+        $searchText = $request->input('search');
+        $returnValue = [];
+
+        if (!empty($searchText)) {
+            $cards = DB::table('cards')
+                ->select('card_id', 'jp_name', 'yyt_price', 'yyt_last_updated')
+                ->where('card_id', 'like', '%' . $searchText . '%')
+                ->get();
+
+            foreach ($cards as $card) {
+                $imgCardId = str_replace('/', '_', $card->card_id);
+
+                $tmp = (array) $card;
+                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                if ($this->flysystem->has("$imgCardId.png")) {
+                    $img = Image::make($this->flysystem->read("$imgCardId.png"));
+                    $img->resize(250, 250, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $tmp['image'] = (string) $img->encode('data-url');
+                }
+                
+                $returnValue[] = $tmp;
+            }
+
+            DB::table('request_log')->insert([
+                'request_type' => 'search',
+                'card_id' => $searchText,
+                'ip_address' => $request->ip(),
+            ]);
+        }
+
+        return response()->json($returnValue);
+    }
+
+    /**
+     * Search cards via ids and retrieve data.
+     * 
+     * @param   Request   $request
+     * @return  Response
+     */
+    public function searchByIds(Request $request) {
+        try {
+            $this->validate($request, [
+                'cards' => 'array|required',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e);
+        }
+
+        $cardIds = $request->input('cards');
+        $returnValue = [];
+
+        if (!empty($cardIds)) {
+            $cards = DB::table('cards')
+                ->select('card_id', 'jp_name', 'yyt_price', 'yyt_last_updated')
+                ->whereIn('card_id', $cardIds)
+                ->get();
+
+            foreach ($cards as $card) {
+                $imgCardId = str_replace('/', '_', $card->card_id);
+
+                $tmp = (array) $card;
+                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+                if ($this->flysystem->has("$imgCardId.png")) {
+                    $img = Image::make($this->flysystem->read("$imgCardId.png"));
+                    $img->resize(250, 250, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $tmp['image'] = (string) $img->encode('data-url');
+                }
+                
+                $returnValue[] = $tmp;
+            }
+
+            DB::table('request_log')->insert([
+                'request_type' => 'history',
+                'card_id' => 'bulk',
+                'ip_address' => $request->ip(),
+            ]);
+        }
+
+        return response()->json($returnValue);
     }
 
     /**
