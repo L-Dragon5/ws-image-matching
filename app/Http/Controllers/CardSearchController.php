@@ -116,6 +116,7 @@ class CardSearchController extends Controller
             $cards = DB::table('cards')
                 ->select('card_id', 'jp_name', 'yyt_price', 'yyt_last_updated')
                 ->where('card_id', 'LIKE', "%{$searchText}%")
+                ->limit(150)
                 ->get();
 
             foreach ($cards as $card) {
