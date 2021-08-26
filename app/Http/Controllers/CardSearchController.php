@@ -54,11 +54,17 @@ class CardSearchController extends Controller
                     if (!empty($result['image_ids'])) {
                         $id = reset($result['image_ids']);
                         $card = DB::table('cards')
-                            ->select('card_id', 'jp_name')
+                            ->select('card_id', 'jp_name', 'yyt_price', 'yyt_last_updated')
                             ->where('id', $id)
                             ->first();
                         $card = (array) $card;
                         $card['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $card['card_id'];
+
+                        DB::table('request_log')->insert([
+                            'request_type' => 'image',
+                            'card_id' => $card['card_id'],
+                            'ip_address' => $request->ip(),
+                        ]);
                     } else {
                         $card['error'] = 'Could not find card associated with image.';
                     }
