@@ -169,11 +169,12 @@ class CardSearchController extends Controller
                 ->whereIn('card_id', $cardIds)
                 ->get();
 
-            foreach ($cards as $card) {
-                $imgCardId = str_replace('/', '_', $card->card_id);
+            foreach (array_reverse($cardIds) as $cardId) {
+                $card = $cards->firstWhere('card_id', $cardId);
+                $imgCardId = str_replace('/', '_', $cardId);
 
                 $tmp = (array) $card;
-                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $tmp['card_id'];
+                $tmp['en_translation_link'] = 'https://heartofthecards.com/code/cardlist.html?card=WS_' . $cardId;
                 if ($this->flysystem->has("$imgCardId.png")) {
                     $img = Image::make($this->flysystem->read("$imgCardId.png"));
                     $img->resize(100, 100, function ($constraint) {
