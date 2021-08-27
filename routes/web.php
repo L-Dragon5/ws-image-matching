@@ -18,6 +18,9 @@ $router->get('/', function () {
 });
 
 $router->group(['middleware' => 'auth.basic'], function () use ($router) {
+    $router->get('/master-functions', function () {
+        return view('admin');
+    });
     $router->get('/retrieveCardList', 'DataScraperController@retrieveCardList');
     $router->get('/retrieveCardData', 'DataScraperController@retrieveCardData');
     $router->get('/retrieveYYTPrices', 'DataScraperController@retrieveYYTPrices');
