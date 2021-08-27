@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 set_time_limit(0);
 header('X-Accel-Buffering: no');
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use GrahamCampbell\Flysystem\FlysystemManager;
 use Intervention\Image\Facades\Image;
