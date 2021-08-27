@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+set_time_limit(0);
 header('X-Accel-Buffering: no');
 
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,60 @@ class PastecIndexController extends Controller
                 $counter = 0;
             }
         }
+
+        ob_end_flush();
+        return;
+    }
+
+    /**
+     * Updated Pastec image index via local DB and images.
+     * 
+     * @return void
+     */
+    public function updateImageIndexById(Request $request, $id) {
+        if (ob_get_level() == 0) ob_start();
+        
+        $card = DB::table('cards')
+            ->select('id', 'card_id')
+            ->where('id', $id)
+            ->first();
+        $uuid = $card->id;
+        $cardId = $card->card_id;
+
+        $imgCardId = str_replace('/', '_', $cardId);
+        if ($this->flysystem->has("$imgCardId.png")) {
+            $img = (string) Image::make($this->flysystem->read("$imgCardId.png"))->encode('jpg', 100);
+        } else if ($this->flysystem->has("$imgCardId.gif")) {
+            $img = (string) Image::make($this->flysystem->read("$imgCardId.gif"))->encode('jpg', 100);
+        }
+
+        if (!empty($img)) {
+            $url = "http://localhost:4212/index/images/$uuid";
+            $header = [
+                'Accept: application/json',
+            ];
+            $ch = curl_init();
+            $timeout = 10;
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $img);
+            $result = json_decode(curl_exec($ch), true);
+            curl_close($ch);
+
+            if (!empty($result)) {
+                echo "$uuid complete.<br>";
+            } else {
+                echo "Something went wrong with $uuid";
+            }
+
+            ob_flush();
+            flush();            
+        }
+
+        $this->saveImageIndex();
 
         ob_end_flush();
         return;

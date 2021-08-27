@@ -28,6 +28,7 @@ $router->group(['middleware' => 'auth.basic'], function () use ($router) {
 
     $router->get('/updateImageIndex', 'PastecIndexController@updateImageIndex');
     $router->get('/saveImageIndex', 'PastecIndexController@saveImageIndex');
+    $router->get('/updateImageIndexById/{id}', 'PastecIndexController@updateImageIndexById');
 });
 
 $router->get('/pingServer', 'CardSearchController@pingServer');
