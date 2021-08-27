@@ -154,13 +154,13 @@ class CardSearchController extends Controller
     public function searchByIds(Request $request) {
         try {
             $this->validate($request, [
-                'cards' => 'array|required',
+                'cards' => 'json|required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json($e);
         }
 
-        $cardIds = $request->input('cards');
+        $cardIds = json_decode($request->input('cards'));
         $returnValue = [];
 
         if (!empty($cardIds)) {
